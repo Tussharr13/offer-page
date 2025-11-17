@@ -107,89 +107,94 @@ export default function OffersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-muted/40">
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-border bg-card">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
+      <header className="sticky top-0 z-40 border-b border-border/70 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/85">
+        <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 sm:py-5 lg:px-8">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-foreground">Exclusive Offers</h1>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <h1 className="text-xl font-bold text-foreground sm:text-3xl">Exclusive Offers</h1>
+              <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
                 Discover amazing deals and save with promo codes
               </p>
             </div>
-            <div className="hidden sm:block">
-              <TrendingUp className="h-8 w-8 text-primary" />
+            <div className="flex justify-center sm:block">
+              <TrendingUp className="h-5 w-5 text-primary sm:h-8 sm:w-8" />
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8 sm:px-6 lg:px-8">
         {/* Search Bar */}
-        <div className="mb-8">
+        <div className="mb-6">
           <Input
             placeholder="Search offers, codes, or categories..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="h-12 text-base"
+            className="h-11 w-full rounded-full border border-border/70 bg-card text-sm shadow-sm transition focus-visible:ring-1 focus-visible:ring-primary/20 sm:h-12 sm:text-base"
           />
         </div>
 
         {/* Category Filter */}
-        <div className="mb-8 flex flex-wrap gap-2">
-          {categories.map(category => (
-            <Button
-              key={category}
-              variant={selectedCategory === category ? 'default' : 'outline'}
-              onClick={() => setSelectedCategory(category)}
-              className="rounded-full"
-            >
-              {category}
-            </Button>
-          ))}
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-wrap gap-2" aria-label="Filter by category">
+            {categories.map(category => (
+              <Button
+                key={category}
+                variant={selectedCategory === category ? 'default' : 'outline'}
+                onClick={() => setSelectedCategory(category)}
+                size="sm"
+                className={`rounded-full px-3 text-xs tracking-wide sm:px-4 sm:text-sm ${
+                  selectedCategory === category
+                    ? 'shadow-[0_10px_25px_rgba(15,23,42,0.12)]'
+                    : 'border-border/60 text-muted-foreground'
+                }`}
+              >
+                {category}
+              </Button>
+            ))}
+          </div>
         </div>
 
         {/* Offers List */}
         {filteredOffers.length > 0 ? (
-          <div className="space-y-4">
+          <div className="space-y-4 sm:space-y-5">
             {filteredOffers.map(offer => (
               <div
                 key={offer.id}
-                className="flex items-center gap-6 rounded-lg border border-border bg-card p-6 transition-all hover:shadow-md hover:border-primary/50"
+                className="grid grid-cols-[auto,1fr,auto] items-center gap-4 rounded-3xl border border-border/60 bg-card p-5 shadow-[0_10px_40px_rgba(15,23,42,0.06)] transition-all sm:gap-6 sm:p-6 hover:-translate-y-0.5 lg:flex lg:items-center lg:gap-6"
               >
                 {/* Discount Badge */}
-                <div className="flex flex-shrink-0 flex-col items-center justify-center rounded-lg bg-primary px-6 py-4 text-center">
-                  <div className="text-3xl font-bold text-primary-foreground">
+                <div className="flex flex-shrink-0 items-center justify-center rounded-2xl bg-[#0b0d21] px-6 py-4 text-center sm:flex-col">
+                  <div className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
                     {offer.discount}
                   </div>
                 </div>
 
                 {/* Content Section */}
-                <div className="flex-1">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-foreground">
-                        {offer.title}
-                      </h3>
-                      <p className="mt-1 text-sm text-muted-foreground">
-                        {offer.description}
-                      </p>
-                      <div className="mt-3 flex flex-wrap items-center gap-3">
-                        <Badge variant="secondary">{offer.category}</Badge>
-                        <span className="text-xs text-muted-foreground">
-                          Expires: {new Date(offer.expiresAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-base font-semibold text-foreground sm:text-lg">
+                    {offer.title}
+                  </h3>
+                  <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                    {offer.description}
+                  </p>
+                  <div className="mt-3 flex flex-wrap items-center gap-2 sm:gap-3">
+                    <Badge variant="secondary" className="rounded-full bg-muted px-3 py-1 text-xs text-foreground">
+                      {offer.category}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      Expires: {new Date(offer.expiresAt).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
 
                 {/* Copy Button Section */}
-                <div className="flex flex-shrink-0 flex-col items-end gap-2">
-                  <div className="mb-2 text-right">
-                    <p className="font-mono text-sm font-bold text-foreground">
+                <div className="flex flex-col items-end gap-2 text-right lg:ml-4">
+                  <div className="text-sm font-semibold tracking-wide text-foreground">
+                    <p className="font-mono text-sm">
                       {offer.code}
                     </p>
                     <p className="text-xs text-accent">{offer.savings}</p>
@@ -198,7 +203,11 @@ export default function OffersPage() {
                     onClick={() => handleCopyCode(offer.code)}
                     size="sm"
                     variant={copiedCode === offer.code ? 'secondary' : 'default'}
-                    className="whitespace-nowrap"
+                    className={`w-auto whitespace-nowrap rounded-full border border-transparent px-5 ${
+                      copiedCode === offer.code
+                        ? 'bg-muted text-foreground'
+                        : 'bg-[#0b0d21] text-white hover:bg-[#05060f]'
+                    }`}
                   >
                     {copiedCode === offer.code ? (
                       <>
@@ -227,9 +236,9 @@ export default function OffersPage() {
         )}
 
         {/* Summary */}
-        <div className="mt-12 rounded-lg bg-primary p-6 text-primary-foreground">
-          <h3 className="text-lg font-semibold">How to Redeem</h3>
-          <ol className="mt-3 space-y-2 text-sm">
+        <div className="mt-8 sm:mt-12 rounded-lg bg-primary p-4 sm:p-6 text-primary-foreground">
+          <h3 className="text-base sm:text-lg font-semibold">How to Redeem</h3>
+          <ol className="mt-3 space-y-1 sm:space-y-2 text-xs sm:text-sm">
             <li className="flex items-start">
               <span className="mr-3 font-bold">1.</span>
               <span>Find an offer that interests you and click "Copy Code"</span>

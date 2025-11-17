@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   title: 'Offers & Deals',
   description: 'Discover amazing deals and save with exclusive promo codes',
   generator: 'v0.app',
+  viewport: 'width=device-width, initial-scale=1',
   icons: {
     icon: [
       {
