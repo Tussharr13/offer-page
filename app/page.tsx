@@ -160,50 +160,50 @@ export default function OffersPage() {
 
         {/* Offers List */}
         {filteredOffers.length > 0 ? (
-          <div className="space-y-4 sm:space-y-5">
+          <div className="space-y-3.5 sm:space-y-4">
             {filteredOffers.map(offer => (
               <div
                 key={offer.id}
-                className="grid grid-cols-[auto,1fr,auto] items-center gap-4 rounded-3xl border border-border/60 bg-card p-5 shadow-[0_10px_40px_rgba(15,23,42,0.06)] transition-all sm:gap-6 sm:p-6 hover:-translate-y-0.5 lg:flex lg:items-center lg:gap-6"
+                className="grid grid-cols-[auto,1fr,auto] items-center gap-3 rounded-2xl border border-border/60 bg-card p-4 shadow-[0_8px_30px_rgba(15,23,42,0.05)] transition-all sm:gap-5 sm:p-5 hover:-translate-y-0.5 lg:flex lg:items-center lg:gap-5"
               >
                 {/* Discount Badge */}
-                <div className="flex flex-shrink-0 items-center justify-center rounded-2xl bg-[#0b0d21] px-6 py-4 text-center sm:flex-col">
-                  <div className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+                <div className="flex flex-shrink-0 items-center justify-center rounded-2xl bg-[#0b0d21] px-5 py-3.5 text-center sm:flex-col">
+                  <div className="text-xl font-bold tracking-tight text-white sm:text-2xl">
                     {offer.discount}
                   </div>
                 </div>
 
                 {/* Content Section */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-base font-semibold text-foreground sm:text-lg">
+                  <h3 className="text-sm font-semibold text-foreground sm:text-base">
                     {offer.title}
                   </h3>
-                  <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+                  <p className="mt-1 text-xs text-muted-foreground sm:text-xs">
                     {offer.description}
                   </p>
-                  <div className="mt-3 flex flex-wrap items-center gap-2 sm:gap-3">
-                    <Badge variant="secondary" className="rounded-full bg-muted px-3 py-1 text-xs text-foreground">
+                  <div className="mt-2.5 flex flex-wrap items-center gap-1.5 sm:gap-2.5">
+                    <Badge variant="secondary" className="rounded-full bg-muted px-2.5 py-0.5 text-[11px] text-foreground">
                       {offer.category}
                     </Badge>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-[11px] text-muted-foreground">
                       Expires: {new Date(offer.expiresAt).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
 
                 {/* Copy Button Section */}
-                <div className="flex flex-col items-end gap-2 text-right lg:ml-4">
-                  <div className="text-sm font-semibold tracking-wide text-foreground">
-                    <p className="font-mono text-sm">
+                <div className="flex flex-col items-end gap-1.5 text-right lg:ml-3">
+                  <div className="text-xs font-semibold tracking-wide text-foreground sm:text-sm">
+                    <p className="font-mono text-xs sm:text-sm">
                       {offer.code}
                     </p>
-                    <p className="text-xs text-accent">{offer.savings}</p>
+                    <p className="text-[11px] text-accent sm:text-xs">{offer.savings}</p>
                   </div>
                   <Button
                     onClick={() => handleCopyCode(offer.code)}
                     size="sm"
                     variant={copiedCode === offer.code ? 'secondary' : 'default'}
-                    className={`w-auto whitespace-nowrap rounded-full border border-transparent px-5 ${
+                    className={`w-auto whitespace-nowrap rounded-full border border-transparent px-4 py-1.5 text-xs sm:px-5 ${
                       copiedCode === offer.code
                         ? 'bg-muted text-foreground'
                         : 'bg-[#0b0d21] text-white hover:bg-[#05060f]'
