@@ -1,10 +1,19 @@
 'use client'
 
 import Image from 'next/image'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, FormEvent } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
 import { Copy, Check, Tag, TrendingUp } from 'lucide-react'
 
 interface Offer {
@@ -267,6 +276,10 @@ export default function OffersPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [copiedCode, setCopiedCode] = useState<string | null>(null)
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [pendingCode, setPendingCode] = useState<string | null>(null)
+  const [formData, setFormData] = useState({ name: '', phone: '', email: '' })
+  const [hasUnlockedAll, setHasUnlockedAll] = useState(false)
 
   const categories = ['All', ...Array.from(new Set(OFFERS.map(o => o.category)))]
 
@@ -283,10 +296,35 @@ export default function OffersPage() {
     })
   }, [searchTerm, selectedCategory])
 
-  const handleCopyCode = (code: string) => {
-    navigator.clipboard.writeText(code)
+  const openFormForCode = (code: string) => {
+    setPendingCode(code)
+    setIsFormOpen(true)
+  }
+
+  const completeCopy = async (code: string) => {
+    await navigator.clipboard.writeText(code)
     setCopiedCode(code)
     setTimeout(() => setCopiedCode(null), 2000)
+  }
+
+  const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    if (!pendingCode) return
+
+    await completeCopy(pendingCode)
+    setHasUnlockedAll(true)
+    setIsFormOpen(false)
+    setPendingCode(null)
+    setFormData({ name: '', phone: '', email: '' })
+  }
+
+  const handleDialogOpenChange = (open: boolean) => {
+    setIsFormOpen(open)
+    if (!open) {
+      setPendingCode(null)
+      setFormData({ name: '', phone: '', email: '' })
+    }
   }
 
   return (
@@ -344,11 +382,21 @@ export default function OffersPage() {
         {/* Offers List */}
         {filteredOffers.length > 0 ? (
           <div className="space-y-3.5 sm:space-y-4">
-            {filteredOffers.map(offer => (
-              <div
-                key={offer.id}
-                className="flex flex-col gap-4 rounded-2xl border border-border/60 bg-card p-4 shadow-[0_8px_30px_rgba(15,23,42,0.05)] transition-all hover:-translate-y-0.5 sm:flex-row sm:items-center sm:gap-5 sm:p-5"
-              >
+            {filteredOffers.map(offer => {
+              const displayCode = hasUnlockedAll ? offer.code : 'Unlock to view'
+              const handleCopyClick = () => {
+                if (hasUnlockedAll) {
+                  void completeCopy(offer.code)
+                  return
+                }
+                openFormForCode(offer.code)
+              }
+
+              return (
+                <div
+                  key={offer.id}
+                  className="flex flex-col gap-4 rounded-2xl border border-border/60 bg-card p-4 shadow-[0_8px_30px_rgba(15,23,42,0.05)] transition-all hover:-translate-y-0.5 sm:flex-row sm:items-center sm:gap-5 sm:p-5"
+                >
                 {/* Offer Image (desktop only) */}
                 <div className="hidden sm:block">
                   <div className="relative h-20 w-20 overflow-hidden rounded-2xl bg-gradient-to-br from-secondary/60 to-primary/30">
@@ -397,11 +445,11 @@ export default function OffersPage() {
                 {/* Copy Button Section */}
                 <div className="flex flex-col gap-1.5 text-center sm:w-40 sm:text-right">
                   <div className="text-xs font-semibold tracking-wide text-foreground sm:text-sm">
-                    <p className="font-mono text-sm sm:text-sm">{offer.code}</p>
+                    <p className="font-mono text-sm sm:text-sm">{displayCode}</p>
                     <p className="text-[11px] text-accent sm:text-xs">{offer.savings}</p>
                   </div>
                   <Button
-                    onClick={() => handleCopyCode(offer.code)}
+                    onClick={handleCopyClick}
                     size="sm"
                     variant={copiedCode === offer.code ? 'secondary' : 'default'}
                     className={`mx-auto whitespace-nowrap rounded-full border border-transparent px-6 py-2 text-xs shadow-sm sm:mx-0 sm:px-5 sm:py-2 ${
@@ -418,13 +466,14 @@ export default function OffersPage() {
                     ) : (
                       <>
                         <Copy className="mr-2 h-4 w-4" />
-                        Copy
+                        {hasUnlockedAll ? 'Copy' : 'Unlock'}
                       </>
                     )}
                   </Button>
                 </div>
-              </div>
-            ))}
+                </div>
+              )
+            })}
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-border py-12">
@@ -459,6 +508,58 @@ export default function OffersPage() {
           </ol>
         </div>
       </main>
+      <Dialog open={isFormOpen} onOpenChange={handleDialogOpenChange}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Unlock your code</DialogTitle>
+            <DialogDescription>
+              Share your details to copy <span className="font-semibold">{pendingCode}</span>
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleFormSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                required
+                value={formData.name}
+                onChange={event => setFormData(prev => ({ ...prev, name: event.target.value }))}
+                placeholder="Enter your full name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone</Label>
+              <Input
+                id="phone"
+                required
+                value={formData.phone}
+                onChange={event => setFormData(prev => ({ ...prev, phone: event.target.value }))}
+                placeholder="Enter your phone number"
+                type="tel"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                required
+                type="email"
+                value={formData.email}
+                onChange={event => setFormData(prev => ({ ...prev, email: event.target.value }))}
+                placeholder="Enter your email address"
+              />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" type="button" onClick={() => handleDialogOpenChange(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                Copy code
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
