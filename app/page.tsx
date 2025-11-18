@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,68 +16,250 @@ interface Offer {
   category: string
   expiresAt: string
   savings: string
+  image: {
+    src: string
+    alt: string
+  }
 }
 
 const OFFERS: Offer[] = [
   {
     id: '1',
-    title: 'Premium Subscription',
-    description: 'Get 50% off your first 3 months',
-    discount: '50% OFF',
-    code: 'SAVE50',
-    category: 'Subscription',
+    title: 'Special Deal Unlock',
+    description: 'You unlocked a special deal! Use BURGER10 on any signature burger combo.',
+    discount: '10% OFF',
+    code: 'BURGER10',
+    category: 'Burger Faves',
     expiresAt: '2025-12-31',
-    savings: 'Save up to $45',
+    savings: 'Save on every burger order',
+    image: {
+      src: '/Burger.png',
+      alt: 'Signature burger combo with toppings',
+    },
   },
   {
     id: '2',
-    title: 'Free Shipping Sitewide',
-    description: 'No minimum purchase required',
-    discount: 'FREE',
-    code: 'SHIP50',
-    category: 'Shipping',
-    expiresAt: '2025-12-25',
-    savings: 'Save on every order',
+    title: 'Exclusive QR Reward',
+    description: 'Scan & apply QR50 to instantly grab ₹50 OFF your meal.',
+    discount: '₹50 OFF',
+    code: 'QR50',
+    category: 'QR Reward',
+    expiresAt: '2025-11-30',
+    savings: 'Flat ₹50 savings',
+    image: {
+      src: '/Wraps.png',
+      alt: 'Fresh wraps meal for QR reward',
+    },
   },
   {
     id: '3',
-    title: 'Bundle Deal',
-    description: 'Buy 2, Get 1 Free on selected items',
-    discount: '33% OFF',
-    code: 'BUNDLE1',
-    category: 'Products',
-    expiresAt: '2025-12-20',
-    savings: 'Save over $60',
+    title: 'Crunch Time Flash',
+    description: 'Copy CRUNCH15 for 15% OFF—valid today only, so hurry!',
+    discount: '15% OFF',
+    code: 'CRUNCH15',
+    category: 'Flash Offer',
+    expiresAt: '2025-11-18',
+    savings: 'Limited-time 15% slash',
+    image: {
+      src: '/Nachos.png',
+      alt: 'Crunchy nachos platter for flash deal',
+    },
   },
   {
     id: '4',
-    title: 'Student Discount',
-    description: 'Exclusive offer for students and educators',
-    discount: '25% OFF',
-    code: 'STUDENT25',
-    category: 'Special',
-    expiresAt: '2025-12-31',
-    savings: 'Year-round savings',
+    title: 'Meal Upgrade Access',
+    description: 'You’re in! Apply MEALUPGRADE to get a FREE fries upgrade.',
+    discount: 'Free Upgrade',
+    code: 'MEALUPGRADE',
+    category: 'Add-ons',
+    expiresAt: '2025-12-15',
+    savings: 'Complimentary fries',
+    image: {
+      src: '/Fries.png',
+      alt: 'Basket of crispy fries upgrade',
+    },
   },
   {
     id: '5',
-    title: 'Black Friday Extended',
-    description: 'Limited time flash sale pricing',
-    discount: '40% OFF',
-    code: 'BF40',
-    category: 'Sale',
-    expiresAt: '2025-12-15',
-    savings: 'Save $100+',
+    title: 'Combo Unlock',
+    description: 'Special Combo Unlock—use DEALCOMBO for stacked savings.',
+    discount: 'Combo Deal',
+    code: 'DEALCOMBO',
+    category: 'Combos',
+    expiresAt: '2025-12-20',
+    savings: 'Extra combo value',
+    image: {
+      src: '/Pizza.png',
+      alt: 'Loaded pizza combo for stacked savings',
+    },
   },
   {
     id: '6',
-    title: 'Loyalty Rewards',
-    description: 'Extra 20% off for returning customers',
+    title: 'Fast Track Flash',
+    description: 'Flash Offer Activated—copy FAST20 for a lightning 20% OFF.',
     discount: '20% OFF',
-    code: 'LOYAL20',
-    category: 'Rewards',
+    code: 'FAST20',
+    category: 'Flash Offer',
+    expiresAt: '2025-11-25',
+    savings: 'Instant 20% discount',
+    image: {
+      src: '/Noodles.png',
+      alt: 'Quick noodles bowl for flash savings',
+    },
+  },
+  {
+    id: '7',
+    title: 'VIP QR Access',
+    description: 'VIP QR Access—use MH99VIP for a free drink with any burger.',
+    discount: 'Free Drink',
+    code: 'MH99VIP',
+    category: 'VIP Perk',
     expiresAt: '2025-12-31',
-    savings: 'Recurring benefits',
+    savings: 'Complimentary beverage',
+    image: {
+      src: '/Mocktail.png',
+      alt: 'Refreshing mocktail for VIP access',
+    },
+  },
+  {
+    id: '8',
+    title: 'Mumbai Burger Saver',
+    description: 'Save ₹20 on the Mumbai Burger – Use code: MUMBAIBURGER20.',
+    discount: '₹20 OFF',
+    code: 'MUMBAIBURGER20',
+    category: 'City Special',
+    expiresAt: '2025-12-31',
+    savings: '₹20 off Mumbai Burger',
+    image: {
+      src: '/Burger.png',
+      alt: 'Mumbai style masala burger',
+    },
+  },
+  {
+    id: '9',
+    title: 'Double Decker Treat',
+    description: 'Buy any Double Decker Burger, get fries free – Code: DDUPFREE.',
+    discount: 'Free Fries',
+    code: 'DDUPFREE',
+    category: 'Combo',
+    expiresAt: '2025-12-31',
+    savings: 'Complimentary fries add-on',
+    image: {
+      src: '/Burger.png',
+      alt: 'Double decker burger with fries',
+    },
+  },
+  {
+    id: '10',
+    title: 'Tandoori Paneer Bonus',
+    description: 'Get ₹30 off the Tandoori Paneer Burger – Code: TANDOORI30.',
+    discount: '₹30 OFF',
+    code: 'TANDOORI30',
+    category: 'Veg Delight',
+    expiresAt: '2025-12-31',
+    savings: '₹30 off paneer burger',
+    image: {
+      src: '/Fried-Momos.png',
+      alt: 'Tandoori-inspired street food bites',
+    },
+  },
+  {
+    id: '11',
+    title: 'Peri Peri Nachos Slash',
+    description: '15% off the Peri Peri Nachos Burger – Code: PERIPERI15.',
+    discount: '15% OFF',
+    code: 'PERIPERI15',
+    category: 'Spicy Picks',
+    expiresAt: '2025-11-30',
+    savings: '15% off Peri Peri Nachos Burger',
+    image: {
+      src: '/Nachos.png',
+      alt: 'Spicy peri peri nachos inspiration',
+    },
+  },
+  {
+    id: '12',
+    title: 'Cheese Blast Deal',
+    description: 'Cheese Blast Burger deal: Use CBLAST25 for ₹25 off.',
+    discount: '₹25 OFF',
+    code: 'CBLAST25',
+    category: 'Cheesy',
+    expiresAt: '2025-12-31',
+    savings: '₹25 off Cheese Blast Burger',
+    image: {
+      src: '/Potato-Cheese-Shot.png',
+      alt: 'Cheesy potato bites for cheese lovers',
+    },
+  },
+  {
+    id: '13',
+    title: 'Jaw Breaker Special',
+    description: 'Jaw Breaker (Double Patty) special – Code: JAW10 for ₹10 off.',
+    discount: '₹10 OFF',
+    code: 'JAW10',
+    category: 'Double Patty',
+    expiresAt: '2025-12-31',
+    savings: '₹10 off Jaw Breaker',
+    image: {
+      src: '/Burger.png',
+      alt: 'Double patty jaw breaker burger',
+    },
+  },
+  {
+    id: '14',
+    title: 'Veg Add-on Cheese Bonus',
+    description: 'Veg Burger add-on cheese free – Use FREECHEESE.',
+    discount: 'Free Cheese',
+    code: 'FREECHEESE',
+    category: 'Veg Delight',
+    expiresAt: '2025-12-31',
+    savings: 'Complimentary cheese add-on',
+    image: {
+      src: '/Garlic-Bread.png',
+      alt: 'Cheesy garlic bread sides',
+    },
+  },
+  {
+    id: '15',
+    title: 'Premium Combo Slash',
+    description: 'Any premium burger + drink combo at ₹49 off – Code: PREMIUM49.',
+    discount: '₹49 OFF',
+    code: 'PREMIUM49',
+    category: 'Premium Combo',
+    expiresAt: '2025-12-31',
+    savings: '₹49 off premium combo',
+    image: {
+      src: '/Shakes.png',
+      alt: 'Premium burger combo with thick shakes',
+    },
+  },
+  {
+    id: '16',
+    title: 'Weekend 2x2 Treat',
+    description: 'Weekend treat: 2 Burgers + 2 Shakes at special price – Code: WKND2X2.',
+    discount: 'Bundle Deal',
+    code: 'WKND2X2',
+    category: 'Weekend Special',
+    expiresAt: '2025-12-29',
+    savings: 'Special price for 2 burgers & 2 shakes',
+    image: {
+      src: '/Fried-Rice.png',
+      alt: 'Weekend spread of comfort food',
+    },
+  },
+  {
+    id: '17',
+    title: 'Surprise Burger Bundle',
+    description: 'Scan QR for surprise burger bundle – Use code: SURPRISEBUNDLE.',
+    discount: 'Mystery Deal',
+    code: 'SURPRISEBUNDLE',
+    category: 'QR Reward',
+    expiresAt: '2025-12-31',
+    savings: 'Hidden bundle savings',
+    image: {
+      src: '/Fried-Momos.png',
+      alt: 'Surprise bundle of street food favorites',
+    },
   },
 ]
 
@@ -164,49 +347,67 @@ export default function OffersPage() {
             {filteredOffers.map(offer => (
               <div
                 key={offer.id}
-                className="grid grid-cols-[auto,1fr,auto] items-center gap-3 rounded-2xl border border-border/60 bg-card p-4 shadow-[0_8px_30px_rgba(15,23,42,0.05)] transition-all sm:gap-5 sm:p-5 hover:-translate-y-0.5 lg:flex lg:items-center lg:gap-5"
+                className="flex flex-col gap-4 rounded-2xl border border-border/60 bg-card p-4 shadow-[0_8px_30px_rgba(15,23,42,0.05)] transition-all hover:-translate-y-0.5 sm:flex-row sm:items-center sm:gap-5 sm:p-5"
               >
-                {/* Discount Badge */}
-                <div className="flex flex-shrink-0 items-center justify-center rounded-2xl bg-[#0b0d21] px-5 py-3.5 text-center sm:flex-col">
-                  <div className="text-xl font-bold tracking-tight text-white sm:text-2xl">
-                    {offer.discount}
+                {/* Offer Image (desktop only) */}
+                <div className="hidden sm:block">
+                  <div className="relative h-20 w-20 overflow-hidden rounded-2xl bg-gradient-to-br from-secondary/60 to-primary/30">
+                    <Image
+                      src={offer.image.src}
+                      alt={offer.image.alt}
+                      fill
+                      sizes="80px"
+                      className="object-cover"
+                    />
                   </div>
                 </div>
 
-                {/* Content Section */}
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-semibold text-foreground sm:text-base">
-                    {offer.title}
-                  </h3>
-                  <p className="mt-1 text-xs text-muted-foreground sm:text-xs">
-                    {offer.description}
-                  </p>
-                  <div className="mt-2.5 flex flex-wrap items-center gap-1.5 sm:gap-2.5">
-                    <Badge variant="secondary" className="rounded-full bg-muted px-2.5 py-0.5 text-[11px] text-foreground">
-                      {offer.category}
-                    </Badge>
-                    <span className="text-[11px] text-muted-foreground">
-                      Expires: {new Date(offer.expiresAt).toLocaleDateString()}
-                    </span>
+                <div className="flex flex-1 flex-col gap-4 sm:flex-row sm:items-center">
+                  {/* Mobile hero image */}
+                  <div className="relative h-36 w-full overflow-hidden rounded-2xl bg-gradient-to-br from-secondary/60 to-primary/30 sm:hidden">
+                    <Image
+                      src={offer.image.src}
+                      alt={offer.image.alt}
+                      fill
+                      sizes="100vw"
+                      className="object-cover"
+                    />
+                  </div>
+
+                  {/* Discount Badge */}
+                  <div className="flex w-full items-center justify-center rounded-2xl bg-primary px-5 py-3 text-primary-foreground shadow-[inset_0_-4px_0_rgba(0,0,0,0.08)] sm:w-auto sm:flex-col sm:px-6 sm:py-4">
+                    <div className="text-lg font-bold tracking-tight sm:text-2xl">{offer.discount}</div>
+                  </div>
+
+                  {/* Content Section */}
+                  <div className="flex-1 min-w-0 space-y-2 text-center sm:text-left">
+                    <h3 className="text-base font-semibold text-foreground sm:text-lg">{offer.title}</h3>
+                    <p className="text-sm text-muted-foreground sm:text-sm">{offer.description}</p>
+                    <div className="flex flex-wrap justify-center gap-2 sm:justify-start sm:gap-3">
+                      <Badge variant="secondary" className="rounded-full bg-muted px-3 py-1 text-[11px] text-foreground">
+                        {offer.category}
+                      </Badge>
+                      <span className="text-[12px] text-muted-foreground">
+                        Expires: {new Date(offer.expiresAt).toLocaleDateString()}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
                 {/* Copy Button Section */}
-                <div className="flex flex-col items-end gap-1.5 text-right lg:ml-3">
+                <div className="flex flex-col gap-1.5 text-center sm:w-40 sm:text-right">
                   <div className="text-xs font-semibold tracking-wide text-foreground sm:text-sm">
-                    <p className="font-mono text-xs sm:text-sm">
-                      {offer.code}
-                    </p>
+                    <p className="font-mono text-sm sm:text-sm">{offer.code}</p>
                     <p className="text-[11px] text-accent sm:text-xs">{offer.savings}</p>
                   </div>
                   <Button
                     onClick={() => handleCopyCode(offer.code)}
                     size="sm"
                     variant={copiedCode === offer.code ? 'secondary' : 'default'}
-                    className={`w-auto whitespace-nowrap rounded-full border border-transparent px-4 py-1.5 text-xs sm:px-5 ${
+                    className={`mx-auto whitespace-nowrap rounded-full border border-transparent px-6 py-2 text-xs shadow-sm sm:mx-0 sm:px-5 sm:py-2 ${
                       copiedCode === offer.code
                         ? 'bg-muted text-foreground'
-                        : 'bg-[#0b0d21] text-white hover:bg-[#05060f]'
+                        : 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
                     }`}
                   >
                     {copiedCode === offer.code ? (
